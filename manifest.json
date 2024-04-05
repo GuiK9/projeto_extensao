@@ -1,0 +1,12 @@
+{
+    "manifest_version": 3,
+    "name": "Marka",
+    "description": "A useful tool to study with web",
+    "version": "1.0.0",
+    "author": "GuiK9",
+    "permissions": ["activeTab", "scripting"],
+    "action": {
+        "default_title": "teste teste",
+        "default_popup": "index.html"
+    }
+  }

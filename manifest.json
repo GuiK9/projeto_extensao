@@ -4,7 +4,7 @@
     "description": "A useful tool to study with web",
     "version": "1.0",
     "author": "GuiK9",
-    "permissions": ["activeTab", "scripting", "storage"],
+    "permissions": ["activeTab", "scripting", "tabs"],
     "action": {
         "default_popup": "index.html"
     }

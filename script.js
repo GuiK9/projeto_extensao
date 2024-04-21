@@ -5,24 +5,15 @@ form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    console.log('===== flag11 =====')
-    console.log(tab.id)
-
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: replaceImages
+        function: replaceImages,
+        args: [input.value]
     })
 })
 
-const replaceImages = () => {
-    console.log('===== flag =====')
-
-    const images = documents.querySelectorAll('img')
-    console.log('===== flag =====')
-    images.forEach(image => {
-        image.src = 'as'
-    });
-
+const replaceImages = (url) => {
+    const images = document.querySelectorAll('img')
+    images.forEach((image) => image.src = url)
 }
-/* 217767661 */

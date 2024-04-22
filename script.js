@@ -1,44 +1,58 @@
-const listLinks = document.getElementById('listLinks')
-const request = window.indexedDB.open('Marka', 1)
+/* 
+    criar um veo tutorial básico com o Marka e usar de dados base para ajudar o usuário
+*/
 
-var db = null
+var request = indexedDB.open("Marka", 2);
+var db;
 
-request.onerror = (event) => {
-    console.log('error on open db');
+request.onsuccess = function(event) {
+  db = event.target.result;
+  console.log("Banco de dados aberto com sucesso");
 };
 
-request.onsuccess = (event) => {
-    db = event.target.result
-}
+request.onerror = function(event) {
+  console.error("Erro ao abrir o banco de dados", event.target.error);
+};
 
 request.onupgradeneeded = function(event) {
-    var db = event.target.result;
+  db = event.target.result;
 
-    // Criar uma loja de objetos chamada "ExemploStore"
-    var objectStore = db.createObjectStore('ExemploStore', { keyPath: 'id', autoIncrement: true });
+  var objectStore = db.createObjectStore("links", { keyPath: "id", autoIncrement:true });
 
-    console.log('Loja de objetos criada com sucesso');
+  objectStore.createIndex("link", "link", { unique: false });
+  objectStore.createIndex("tempo", "tempo", { unique: false });
+  objectStore.createIndex("descricao", "descricao", { unique: false });
+
+  console.log("Banco de dados e tabela criados com sucesso");
 };
 
+function adicionarRegistro(link, tempo, descricao) {
+  var transaction = db.transaction(["links"], "readwrite");
+  var objectStore = transaction.objectStore("links");
+  var request = objectStore.add({ link: link, tempo: tempo, descricao: descricao });
 
-/*const form = document.querySelector('form')
-const input = document.querySelector('.input')
+  request.onsuccess = function(event) {
+    console.log("Registro adicionado com sucesso");
+  };
 
- form.addEventListener('submit', async (event) => {
-    event.preventDefault();
+  request.onerror = function(event) {
+    console.error("Erro ao adicionar registro", event.target.error);
+  };
+}
 
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+function recuperarRegistros() {
+  var transaction = db.transaction(["links"]);
+  var objectStore = transaction.objectStore("links");
+  var getRequest = objectStore.getAll();
 
-    chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        function: replaceImages,
-        args: [input.value]
-    })
-})
+  getRequest.onsuccess = function(event) {
+    var registros = event.target.result;
+    registros.forEach(function(registro) {
+      console.log("ID:", registro.id, "Link:", registro.link, "Tempo:", registro.tempo, "Descrição:", registro.descricao);
+    });
+  };
 
-const replaceImages = (url) => {
-    const images = document.querySelectorAll('.ytp-progress-bar')
-    images.forEach((video) => {
-        console.log(video)
-    })
-} */
+  getRequest.onerror = function(event) {
+    console.error("Erro ao recuperar links", event.target.error);
+  };
+}
